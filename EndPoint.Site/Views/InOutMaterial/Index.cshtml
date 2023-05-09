@@ -1,0 +1,208 @@
+﻿@using ModirOnline.Common;
+@using ModirOnline.Domain.Entities;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model ResultDto<List<ModirOnline.Domain.Entities.Material>>
+
+
+<div id="UpdatePanel">
+    <table id="myTable" class="table table-striped table-bordered" width="100%">
+        <thead>
+            <tr>
+                <th>عنوان</th>
+                <th><select class="form-control" id="Filter_MaterialCategoryID" asp-items="@ViewBag.Categories"></select></th>
+                <th>
+                    <button class="btn btn-info" onclick="FilterMaterial()"><i class="fa fa-search"></i></button>
+                </th>
+                
+            </tr>
+        </thead>
+    </table>
+    <br />
+    
+            @if (Model.IsSuccess)
+            {
+                @foreach (ModirOnline.Domain.Entities.Material item in Model.Data)
+                {
+            <h1>@item.Title</h1> <button class="btn btn-info" onclick="ShowModalAddInOut('@item.MaterialId')">ثبت ورود و خروج <i class="fa fa-edit"></i></button>
+                <table id="myTable" class="table table-striped table-bordered" width="100%">
+                    <tbody>
+                        
+                    @foreach (InventoryAmount item2 in item.InventoryAmounts)
+
+                    {
+                        <tr>
+                            <td>@item2.Inventory.Title</td>
+                            <td>موجودی : @item2.Amount @item.Unit</td>
+                            <td>میانگین قیمت : @item2.AveragePrice</td>
+                            <td>آخرین قیمت : @item2.LastPrice</td>
+                        </tr>
+                        <tr>
+                            <div class="progress" style="height: 10px;">
+                                @{
+                                    int Pecent = (item2.Amount * 100) / item2.MaxAmount;
+                                }
+                                <div class="progress-bar" role="progressbar" style="width: @Pecent%;" aria-valuenow="@item2.Amount" aria-valuemin="0" aria-valuemax="@item2.MaxAmount"></div>
+                            </div>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+                <br />
+                }
+            }
+            else
+            {
+                <table id="myTable" class="table table-striped table-bordered" width="100%">
+                    <tbody>
+                        <tr>
+                            <td>@Model.Message</td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+        
+</div>
+
+@section Scripts
+    {
+
+    <link href="~/Sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    <script src="~/Sweetalert2/sweetalert2.min.js"></script>
+
+    <script>
+        function FilterMaterial() {
+            var MaterialCategoryID = $("#Filter_MaterialCategoryID").val();
+
+            window.location = 'Index?MaterialCategoryID=' + MaterialCategoryID;
+
+        }
+
+        function AddInOut() {
+
+            var Title = $("#Add_Title").val();
+            var Type = $("#Add_Type").val();
+            var Amount = $("#Add_Amount").val();
+            var Price = $("#Add_Price").val();
+            var MaterialID = $("#Add_MaterialID").val();
+            var InventoryID = $("#Add_InventoryID").val();
+
+            var postData = {
+                'Title': Title,
+                'Type': Type,
+                'Price': Price,
+                'Amount': Amount,
+                'MaterialID': MaterialID,
+                'InventoryID': InventoryID,
+
+            };
+
+
+            $.ajax({
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: 'json',
+                type: "POST",
+                url: "Add",
+                data: postData,
+                success: function (data) {
+                    if (data.isSuccess == true) {
+                        swal.fire(
+                            'موفق!',
+                            data.message,
+                            'success'
+                        ).then(function (isConfirm) {
+                            //location.reload();
+                            $("#UpdatePanel").load(window.location + " #UpdatePanel");;
+                        });
+                    }
+                    else {
+                        swal.fire(
+                            'هشدار!',
+                            data.message,
+                            'warning'
+                        );
+                    }
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+
+            $('#AddInOut').modal('hide');
+
+        }
+
+
+        function ShowModalAddInOut(MaterialID) {
+            
+            $('#Add_MaterialID').val(MaterialID)
+
+            $('#AddInOut').modal('show');
+
+        }
+
+
+    </script>
+
+}
+
+@section Modals
+    {
+    <!-- Modal AddInOut -->
+    <div class="modal fade" id="AddInOut" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">ویرایش طبقه بندی مواد اولیه</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                    <fieldset class="form-group">
+                        <label for="basicInput">ورود یا خروج</label>
+                        <select id="Add_Type" class="form-control">
+                            
+                            <option value="ورود">ورود</option>
+                            <option value="خروج">خروج</option>
+                            
+                        </select>
+                    </fieldset>
+                </div>
+                <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                    <fieldset class="form-group">
+                        <label for="basicInput">انبار</label>
+                        <select class="form-control" id="Add_InventoryID" asp-items="@ViewBag.Inventories"></select>
+                    </fieldset>
+                </div>
+                <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                    <fieldset class="form-group">
+                        <input type="hidden" id="Add_MaterialID" />
+                        <label for="basicInput">عنوان</label>
+                        <input type="text" class="form-control" id="Add_Title">
+                    </fieldset>
+                </div>
+                <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                    <fieldset class="form-group">
+                        <label for="basicInput">مقدار</label>
+                        <input type="number" class="form-control" id="Add_Amount">
+                    </fieldset>
+                </div>
+                <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                    <fieldset class="form-group">
+                        <label for="basicInput">قیمت در صورت ورود به انبار</label>
+                        <input type="number" class="form-control" id="Add_Price">
+                    </fieldset>
+                </div>
+                
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" data-dismiss="modal">بستن</a>
+                    <a class="btn btn-primary" onclick="AddInOut()">ثبت</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

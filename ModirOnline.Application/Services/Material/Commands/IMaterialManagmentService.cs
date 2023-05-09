@@ -529,6 +529,8 @@ namespace ModirOnline.Application.Services.Material.Commands
             {
                 Materials = _Context.Materials
                 .Include(p => p.MaterialCategory)
+                .Include(p=>p.InventoryAmounts)
+                .ThenInclude(p =>p.Inventory)
                 .ToList();
 
             }
@@ -537,6 +539,8 @@ namespace ModirOnline.Application.Services.Material.Commands
                 Materials = _Context.Materials
                 .Where(p => p.MaterialCategoryId == MaterialCategoryID)
                 .Include(p => p.MaterialCategory)
+                .Include(p => p.InventoryAmounts)
+                .ThenInclude(p => p.Inventory)
                 .ToList();
 
             }

@@ -16,7 +16,7 @@ public partial class InOutMaterial
     public int? InventoryId { get; set; }
 
     public int? EmployeeId { get; set; }
-
+    
     public int? Price { get; set; }
 
     public DateTime? DateTime { get; set; }

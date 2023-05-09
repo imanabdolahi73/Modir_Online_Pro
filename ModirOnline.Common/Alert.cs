@@ -34,7 +34,7 @@ namespace ModirOnline.Common
         public static string Success = "موفق";
         public static string UnSuccess = "نا موفق";
         public static string NotFound = "موردی یافت نشد";
-
+        public static string NotFoundInventoryAmount = "این مواد اولیه در انبار انتخاب شده وجود ندارد";
         public static string GetVisibleStatus(int Visible)
         {
             if (Visible == 1)
@@ -46,5 +46,6 @@ namespace ModirOnline.Common
                 return "غیر قابل نمایش";
             }
         }
+
     }
 }

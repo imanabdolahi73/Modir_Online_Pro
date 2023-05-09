@@ -35,6 +35,7 @@ builder.Services.AddScoped<IGetAllInventoriesService, GetAllInventoriesService>(
 builder.Services.AddScoped<IProductManagmentService, ProductManagmentService>();
 builder.Services.AddScoped<IGetAllCategoriesService, GetAllCategoriesService>();
 builder.Services.AddScoped<IGetAllMaterialsService, GetAllMaterialsService>();
+builder.Services.AddScoped<IInOutMaterialService, InOutMaterialService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
