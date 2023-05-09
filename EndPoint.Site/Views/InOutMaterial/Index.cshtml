@@ -42,7 +42,7 @@
                         <tr>
                             <div class="progress" style="height: 10px;">
                                 @{
-                                    int Pecent = (item2.Amount * 100) / item2.MaxAmount;
+                                    int Pecent = (int)((item2.Amount * 100) / item2.MaxAmount);
                                 }
                                 <div class="progress-bar" role="progressbar" style="width: @Pecent%;" aria-valuenow="@item2.Amount" aria-valuemin="0" aria-valuemax="@item2.MaxAmount"></div>
                             </div>
