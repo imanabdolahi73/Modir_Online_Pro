@@ -34,6 +34,6 @@ namespace EndPoint.Site.Controllers
         {
             return Json(_materialManagmentService.Add_MaterialCategory(Title));
         }
-
     }
+
 }

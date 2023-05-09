@@ -1,0 +1,277 @@
+﻿@using ModirOnline.Domain.Entities;
+@using ModirOnline.Common;
+@model ResultDto<List<MaterialUsed>>;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="UpdatePanel">
+    <table id="myTable" class="table table-striped table-bordered" width="100%">
+        <thead>
+            <tr>
+                <th>رسپی محصول</th>
+                
+                <th><button class="btn btn-info" onclick="ShowModalAddMaterialUsed('')">رسپی جدید<i class="fa fa-edit"></i></button></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.IsSuccess)
+            {
+                @foreach (MaterialUsed item in Model.Data)
+                {
+                    <tr>
+                        <td>@item.Title</td>
+                        
+                        <td>
+                            <button class="btn btn-danger" onclick="DeleteMaterialUsed('@item.MaterialUsedId')"><i class="fa fa-trash"></i></button>
+                            <button class="btn btn-info" onclick="ShowModalEditMaterialUsed('@item.MaterialUsedId' , '@item.Amount')"><i class="fa fa-refresh"></i></button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td>@Model.Message</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section Scripts
+    {
+
+    <link href="~/Sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    <script src="~/Sweetalert2/sweetalert2.min.js"></script>
+
+    <script>
+
+
+        function DeleteMaterialUsed(MaterialUsedID) {
+            swal.fire({
+                title: 'حذف رسپی',
+                text: "کاربر گرامی از حذف  مطمئن هستید؟",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#7cacbe',
+                confirmButtonText: 'بله ، حذف شود',
+                cancelButtonText: 'خیر'
+            }).then((result) => {
+                if (result.value) {
+                    var postData = {
+                        'MaterialUsedID': MaterialUsedID,
+                    };
+
+                    $.ajax({
+                        contentType: 'application/x-www-form-urlencoded',
+                        dataType: 'json',
+                        type: "POST",
+                        url: "Delete",
+                        data: postData,
+                        success: function (data) {
+                            if (data.isSuccess == true) {
+                                swal.fire(
+                                    'موفق!',
+                                    data.message,
+                                    'success'
+                                ).then(function (isConfirm) {
+                                    //location.reload();
+                                    $("#UpdatePanel").load(window.location + " #UpdatePanel");;
+                                });
+                            }
+                            else {
+
+                                swal.fire(
+                                    'هشدار!',
+                                    data.message,
+                                    'warning'
+                                );
+
+                            }
+                        },
+                        error: function (request, status, error) {
+                            alert(request.responseText);
+                        }
+
+                    });
+
+                }
+            })
+        }
+
+        function EditMaterialUsed() {
+
+            var MaterialUsedID = $("#Edit_MaterialUsedID").val();
+            var Amount = $("#Edit_Amount").val();
+            
+            var postData = {
+                'MaterialUsedID': MaterialUsedID,
+                'Amount': Amount,
+            };
+
+
+            $.ajax({
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: 'json',
+                type: "POST",
+                url: "Edit",
+                data: postData,
+                success: function (data) {
+                    if (data.isSuccess == true) {
+                        swal.fire(
+                            'موفق!',
+                            data.message,
+                            'success'
+                        ).then(function (isConfirm) {
+                            $("#UpdatePanel").load(window.location + " #UpdatePanel");;
+
+                        });
+                    }
+                    else {
+                        swal.fire(
+                            'هشدار!',
+                            data.message,
+                            'warning'
+                        );
+                    }
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+
+            $('#EditMaterialUsed').modal('hide');
+
+        }
+
+        function AddMaterialUsed() {
+
+            var Amount = $("#Add_Amount").val();
+            var MaterialID = $("#Add_MaterialID").val();
+            var ProductID = $("#Add_ProductID").val();
+
+            var postData = {
+                'Amount': Amount,
+                'MaterialID': MaterialID,
+                'ProductID': ProductID,
+
+            };
+
+
+            $.ajax({
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: 'json',
+                type: "POST",
+                url: "Add",
+                data: postData,
+                success: function (data) {
+                    if (data.isSuccess == true) {
+                        swal.fire(
+                            'موفق!',
+                            data.message,
+                            'success'
+                        ).then(function (isConfirm) {
+                            //location.reload();
+                            $("#UpdatePanel").load(window.location + " #UpdatePanel");;
+                        });
+                    }
+                    else {
+                        swal.fire(
+                            'هشدار!',
+                            data.message,
+                            'warning'
+                        );
+                    }
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+
+            $('#AddMaterialUsed').modal('hide');
+
+        }
+
+
+        function ShowModalEditMaterialUsed(MaterialUsedID, Amount) {
+            $('#Edit_Amount').val(Amount)
+            $('#Edit_MaterialUsedID').val(MaterialUsedID)
+
+            $('#EditMaterialUsed').modal('show');
+
+        }
+
+        function ShowModalAddMaterialUsed() {
+            $('#AddMaterialUsed').modal('show');
+
+        }
+
+    </script>
+
+}
+
+@section Modals
+    {
+    <!-- Modal Edit MaterialUsed -->
+    <div class="modal fade" id="EditMaterialUsed" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">ویرایش رسپی</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                        <fieldset class="form-group">
+                            <input type="hidden" id="Edit_MaterialUsedID" />
+                            <label for="basicInput">مقدار</label>
+                            <input type="number" class="form-control" id="Edit_Amount">
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" data-dismiss="modal">بستن</a>
+                    <a class="btn btn-primary" onclick="EditMaterialUsed()">اعمال تغییرات</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Add MaterialUsed -->
+    <div class="modal fade" id="AddMaterialUsed" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">اضافه کردن رسپی</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                        <fieldset class="form-group">
+                            <input type="hidden" id="Add_ProductID" value="@ViewBag.ProductID"/>
+                            <label for="basicInput">مواد اولیه</label>
+                            <select class="form-control" id="Add_MaterialID" asp-items="@ViewBag.Materials"></select>
+                        </fieldset>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                        <fieldset class="form-group">
+                            <label for="basicInput">مقدار</label>
+                            <input type="number" class="form-control" id="Add_Amount">
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" data-dismiss="modal">بستن</a>
+                    <a class="btn btn-primary" onclick="AddMaterialUsed()">اضافه کردن</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}

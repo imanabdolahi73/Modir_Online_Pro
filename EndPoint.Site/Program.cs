@@ -3,6 +3,7 @@ using ModirOnline.Application.Interfaces.Contexts;
 using ModirOnline.Application.Services.Material.Commands;
 using ModirOnline.Application.Services.Material.Queries;
 using ModirOnline.Application.Services.Product.Commands;
+using ModirOnline.Application.Services.Product.Queries;
 using ModirOnline.Common;
 using ModirOnline.Persistence.Contexts;
 
@@ -32,7 +33,8 @@ builder.Services.AddScoped<IMaterialManagmentService, MaterialManagmentService>(
 builder.Services.AddScoped<IGetAllMaterialCategoriesService, GetAllMaterialCategoriesService>();
 builder.Services.AddScoped<IGetAllInventoriesService, GetAllInventoriesService>();
 builder.Services.AddScoped<IProductManagmentService, ProductManagmentService>();
-
+builder.Services.AddScoped<IGetAllCategoriesService, GetAllCategoriesService>();
+builder.Services.AddScoped<IGetAllMaterialsService, GetAllMaterialsService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

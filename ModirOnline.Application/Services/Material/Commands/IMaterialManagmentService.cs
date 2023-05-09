@@ -555,8 +555,6 @@ namespace ModirOnline.Application.Services.Material.Commands
                 }
                 else
                 {
-                    List<Inventory> myInventories = _Context.Inventories.ToList();
-
                     return new ResultDto<List<Domain.Entities.Material>>
                     {
                         Data = Materials,
@@ -579,6 +577,7 @@ namespace ModirOnline.Application.Services.Material.Commands
             }
 
         }
+
     }
 
     //Requset For Add Material

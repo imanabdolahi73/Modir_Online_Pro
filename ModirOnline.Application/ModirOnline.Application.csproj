@@ -24,8 +24,4 @@
     <ProjectReference Include="..\ModirOnline.Domain\ModirOnline.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Product\Queries\" />
-  </ItemGroup>
-
 </Project>

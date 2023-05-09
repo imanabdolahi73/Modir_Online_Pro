@@ -1,0 +1,376 @@
+﻿@using ModirOnline.Common;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model ResultDto<List<ModirOnline.Domain.Entities.Product>>
+
+
+<div id="UpdatePanel">
+    <table id="myTable" class="table table-striped table-bordered" width="100%">
+        <thead>
+            <tr>
+                <th>عنوان</th>
+                <th>قیمت</th>
+                <th>وضعیت نمایش</th>
+                <th>
+                    <select class="form-control" id="Filter_ProductCategoryID" asp-items="@ViewBag.Categories"></select>
+                </th>
+                <th>
+                    <button class="btn btn-info" onclick="FilterProduct()"><i class="fa fa-search"></i></button>
+                    <button class="btn btn-info" onclick="ShowModalAddProduct()">محصول جدید<i class="fa fa-edit"></i></button>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.IsSuccess)
+            {
+                @foreach (ModirOnline.Domain.Entities.Product item in Model.Data)
+                {
+                    <tr>
+                        <td>@item.Title</td>
+                        <td>@item.Price</td>
+                        <td>
+                            @if (item.Visible == 1)
+                            {
+                                <button class="btn btn-info" onclick="ChangeVisible('@item.ProductId')">@Alert.GetVisibleStatus((int)item.Visible)</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-danger" onclick="ChangeVisible('@item.ProductId')">@Alert.GetVisibleStatus((int)item.Visible)</button>
+                            }
+
+                        </td>
+
+                        <td>@item.Category.Title</td>
+
+                        <td>
+                            <button class="btn btn-danger" onclick="DeleteProduct('@item.ProductId')"><i class="fa fa-trash"></i></button>
+                            <button class="btn btn-info" onclick="ShowModalEditProduct('@item.ProductId' , '@item.Title' , '@item.Price')"><i class="fa fa-refresh"></i></button>
+                            <a class="btn btn-info" href="~/MaterialUsed/Index?ProductID=@item.ProductId">رسپی</a>
+                            
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td>@Model.Message</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts
+    {
+
+    <link href="~/Sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    <script src="~/Sweetalert2/sweetalert2.min.js"></script>
+
+    <script>
+        function FilterProduct() {
+            var ProductCategoryID = $("#Filter_ProductCategoryID").val();
+
+            window.location = 'Index?CategoryID=' + ProductCategoryID;
+
+        }
+
+        function ChangeVisible(ProductID) {
+            swal.fire({
+                title: 'تغییر وضعیت نمایش',
+                text: "کاربر گرامی از تغییر  مطمئن هستید؟",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#7cacbe',
+                confirmButtonText: 'بله ، تغییر داده شود',
+                cancelButtonText: 'خیر'
+            }).then((result) => {
+                if (result.value) {
+                    var postData = {
+                        'ProductID': ProductID,
+                    };
+
+                    $.ajax({
+                        contentType: 'application/x-www-form-urlencoded',
+                        dataType: 'json',
+                        type: "POST",
+                        url: "ChangeVisible",
+                        data: postData,
+                        success: function (data) {
+                            if (data.isSuccess == true) {
+                                swal.fire(
+                                    'موفق!',
+                                    data.message,
+                                    'success'
+                                ).then(function (isConfirm) {
+                                    //location.reload();
+                                    $("#UpdatePanel").load(window.location + " #UpdatePanel");;
+                                });
+                            }
+                            else {
+
+                                swal.fire(
+                                    'هشدار!',
+                                    data.message,
+                                    'warning'
+                                );
+
+                            }
+                        },
+                        error: function (request, status, error) {
+                            alert(request.responseText);
+                        }
+
+                    });
+
+                }
+            })
+        }
+
+        function DeleteProduct(ProductID) {
+            swal.fire({
+                title: 'حذف محصول',
+                text: "کاربر گرامی از حذف  مطمئن هستید؟",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#7cacbe',
+                confirmButtonText: 'بله ، حذف شود',
+                cancelButtonText: 'خیر'
+            }).then((result) => {
+                if (result.value) {
+                    var postData = {
+                        'ProductID': ProductID,
+                    };
+
+                    $.ajax({
+                        contentType: 'application/x-www-form-urlencoded',
+                        dataType: 'json',
+                        type: "POST",
+                        url: "Delete",
+                        data: postData,
+                        success: function (data) {
+                            if (data.isSuccess == true) {
+                                swal.fire(
+                                    'موفق!',
+                                    data.message,
+                                    'success'
+                                ).then(function (isConfirm) {
+                                    //location.reload();
+                                    $("#UpdatePanel").load(window.location + " #UpdatePanel");;
+                                });
+                            }
+                            else {
+
+                                swal.fire(
+                                    'هشدار!',
+                                    data.message,
+                                    'warning'
+                                );
+
+                            }
+                        },
+                        error: function (request, status, error) {
+                            alert(request.responseText);
+                        }
+
+                    });
+
+                }
+            })
+        }
+
+        function EditProduct() {
+
+            var ProductID = $("#Edit_ProductID").val();
+            var Title = $("#Edit_Title").val();
+            var Price = $("#Edit_Price").val();
+            var postData = {
+                'ProductID': ProductID,
+                'Title': Title,
+                'Price': Price,
+
+            };
+
+
+            $.ajax({
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: 'json',
+                type: "POST",
+                url: "Edit",
+                data: postData,
+                success: function (data) {
+                    if (data.isSuccess == true) {
+                        swal.fire(
+                            'موفق!',
+                            data.message,
+                            'success'
+                        ).then(function (isConfirm) {
+                            $("#UpdatePanel").load(window.location + " #UpdatePanel");;
+
+                        });
+                    }
+                    else {
+                        swal.fire(
+                            'هشدار!',
+                            data.message,
+                            'warning'
+                        );
+                    }
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+
+            $('#EditProduct').modal('hide');
+
+        }
+
+        function AddProduct() {
+
+            var Title = $("#Add_Title").val();
+            var Price = $("#Add_Price").val();
+            var ProductCategoryID = $("#Add_ProductCategoryID").val();
+            
+            var postData = {
+                'Title': Title,
+                'Price': Price,
+                'CategoryID': ProductCategoryID,
+                
+            };
+
+
+            $.ajax({
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: 'json',
+                type: "POST",
+                url: "Add",
+                data: postData,
+                success: function (data) {
+                    if (data.isSuccess == true) {
+                        swal.fire(
+                            'موفق!',
+                            data.message,
+                            'success'
+                        ).then(function (isConfirm) {
+                            //location.reload();
+                            $("#UpdatePanel").load(window.location + " #UpdatePanel");;
+                        });
+                    }
+                    else {
+                        swal.fire(
+                            'هشدار!',
+                            data.message,
+                            'warning'
+                        );
+                    }
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+
+            $('#AddProduct').modal('hide');
+
+        }
+
+
+        function ShowModalEditProduct(ProductID, Title, Price) {
+            $('#Edit_Title').val(Title)
+            $('#Edit_ProductID').val(ProductID)
+            $('#Edit_Price').val(Price)
+            $('#EditProduct').modal('show');
+
+        }
+
+        function ShowModalAddProduct() {
+            $('#AddProduct').modal('show');
+
+        }
+
+    </script>
+
+}
+
+@section Modals
+    {
+    <!-- Modal Edit Product -->
+    <div class="modal fade" id="EditProduct" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">ویرایش محصول</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                        <fieldset class="form-group">
+                            <input type="hidden" id="Edit_ProductID" />
+                            <label for="basicInput">عنوان مواد اولیه</label>
+                            <input type="text" class="form-control" id="Edit_Title">
+                        </fieldset>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                        <fieldset class="form-group">
+                            <label for="basicInput">قیمت</label>
+                            <input type="number" class="form-control" id="Edit_Price">
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" data-dismiss="modal">بستن</a>
+                    <a class="btn btn-primary" onclick="EditProduct()">اعمال تغییرات</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Add Product -->
+    <div class="modal fade" id="AddProduct" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">اضافه کردن محصول</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                        <fieldset class="form-group">
+                            <label for="basicInput">عنوان</label>
+                            <input type="text" class="form-control" id="Add_Title">
+                        </fieldset>
+                    </div>
+                    
+                    <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                        <fieldset class="form-group">
+                            <label for="basicInput">طبقه بندی</label>
+                            <select class="form-control" id="Add_ProductCategoryID" asp-items="@ViewBag.Categories"></select>
+                        </fieldset>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                        <fieldset class="form-group">
+                            <label for="basicInput">قیمت</label>
+                            <input type="number" class="form-control" id="Add_Price">
+                        </fieldset>
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" data-dismiss="modal">بستن</a>
+                    <a class="btn btn-primary" onclick="AddProduct()">اضافه کردن</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+}

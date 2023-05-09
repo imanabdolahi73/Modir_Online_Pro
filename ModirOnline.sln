@@ -17,17 +17,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{7BE75AE9-45A1-4035-A2F8-754570AB831A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModirOnline.Common", "ModirOnline.Common\ModirOnline.Common.csproj", "{0CC7237A-9DC8-4E4E-9C00-3BEDA1B864B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModirOnline.Common", "ModirOnline.Common\ModirOnline.Common.csproj", "{0CC7237A-9DC8-4E4E-9C00-3BEDA1B864B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModirOnline.Application", "ModirOnline.Application\ModirOnline.Application.csproj", "{3BDA1B33-DED8-4316-9C1B-A473AFDCA85F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModirOnline.Application", "ModirOnline.Application\ModirOnline.Application.csproj", "{3BDA1B33-DED8-4316-9C1B-A473AFDCA85F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModirOnline.Domain", "ModirOnline.Domain\ModirOnline.Domain.csproj", "{6319D755-8277-4601-908C-230ED9EA5DBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModirOnline.Domain", "ModirOnline.Domain\ModirOnline.Domain.csproj", "{6319D755-8277-4601-908C-230ED9EA5DBA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModirOnline.Persistence", "ModirOnline.Persistence\ModirOnline.Persistence.csproj", "{930931D8-DD1D-44B5-90BE-62C7DB93BC52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModirOnline.Persistence", "ModirOnline.Persistence\ModirOnline.Persistence.csproj", "{930931D8-DD1D-44B5-90BE-62C7DB93BC52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModirOnline.Infrastructure", "ModirOnline.Infrastructure\ModirOnline.Infrastructure.csproj", "{0F429372-8091-4BF1-AC88-159FE99A0914}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModirOnline.Infrastructure", "ModirOnline.Infrastructure\ModirOnline.Infrastructure.csproj", "{0F429372-8091-4BF1-AC88-159FE99A0914}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndPoint.Site", "EndPoint.Site\EndPoint.Site.csproj", "{7777CE37-90F0-408C-84DC-6229310C6A4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EndPoint.Site", "EndPoint.Site\EndPoint.Site.csproj", "{7777CE37-90F0-408C-84DC-6229310C6A4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

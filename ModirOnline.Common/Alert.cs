@@ -13,6 +13,9 @@ namespace ModirOnline.Common
         public static string Entity_Inventory = "انبار";
         public static string Entity_InventoryAmount = "مواد اولیه در انبار";
         public static string Entity_Category = "طبقه بندی محصول";
+        public static string Entity_Product = "محصول";
+        public static string Entity_MaterialUsed = "رسپی";
+
         public static string GetInsertAlert(string EntityName)
         {
             return EntityName + " با موفقیت ثبت شد.";
@@ -31,7 +34,6 @@ namespace ModirOnline.Common
         public static string Success = "موفق";
         public static string UnSuccess = "نا موفق";
         public static string NotFound = "موردی یافت نشد";
-
 
         public static string GetVisibleStatus(int Visible)
         {
